@@ -147,7 +147,7 @@ if(isset($_GET['submit'])){
 -->
 	<div id="Input">
 	<div id="Form">
-		<form action="saveToFile.php" mathod="get">
+		<form action="saveToDB.php" mathod="get">
 
 		<div class="box">
 		<label for="songName">Song Name*:</label>
@@ -184,7 +184,7 @@ if(isset($_GET['submit'])){
 <div id="mainTable">
 <?php
 	echo"<div id=\"List\">";
-	$fh=fopen("songs.txt","r");
+	//$fh=fopen("songs.txt","r");
 	echo"<table>";
 	echo"<tr>
 	<th>Index</th>
@@ -193,21 +193,36 @@ if(isset($_GET['submit'])){
 	<th>Suggested By</th>
 	<th>YouTube Link</th>
 	</tr>";
-	$lineCnt=0;
-	while($line=fgets($fh,200))
+	//$lineCnt=0;
+	//while($line=fgets($fh,200))
+	//{
+	//	$tokens=explode("|",$line);
+	//	$lineCnt++;
+	//		echo"
+	//			<tr>
+	//				<td>$lineCnt</td>
+	//				<td>$tokens[0]</td>
+	//				<td>$tokens[1]</td>
+	//				<td>$tokens[2]</td>
+	//				<td><a href=\"$tokens[3]\" target=\"_blank\">$tokens[3]</a></td>
+	//			</tr>
+	//		";
+	//}
+
+	pg_connect("host=localhost user=vrushali password=openpsql dbname=vrushali") or die("Failed");
+	$result=pg_query("select * from songs order by index DESC;");
+
+	$n=pg_num_rows($result);
+	for($i=0;$i<$n;$i++)
 	{
-		$tokens=explode("|",$line);
-		$lineCnt++;
-			echo"
-				<tr>
-					<td>$lineCnt</td>
-					<td>$tokens[0]</td>
-					<td>$tokens[1]</td>
-					<td>$tokens[2]</td>
-					<td><a href=\"$tokens[3]\" target=\"_blank\">$tokens[3]</a></td>
-				</tr>
-			";
+		$row=pg_fetch_assoc($result);
+		echo"<tr><td>".$row['index']."</td>";
+		echo"<td>".$row['name']."</td>";
+		echo"<td>".$row['singerorband']."</td>";
+		echo"<td>".$row['suggestedby']."</td>";
+		echo"<td>".$row['youtubelink']."</td></tr>";
 	}
+
 	echo"</table>";
 	echo"</div>";
 ?>
@@ -222,7 +237,7 @@ if(isset($_GET['submit'])){
 	</div>
 	<div>
 		<span>Github link for code:</span>
-		<a href="">Code link</a>
+		<a href="https://github.com/vrushali-d/Songs">Code link</a>
 	</div>
 </div>
 
